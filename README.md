@@ -24,7 +24,7 @@ Modules Used: random, tkinter
 
 Clone the repository:
 
-git clone https://github.com/yourusername/Color-Blindness-Test.git
+git clone https://github.com/kanishkaa-22/Color-Blindness-Test.git
 cd Color-Blindness-Test
 
 

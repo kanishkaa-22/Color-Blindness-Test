@@ -1,0 +1,112 @@
+import tkinter as tk
+import random
+
+# Color dictionary (you can add more shades)
+color_dict = {
+    "Red": "#FF0000",
+    "Green": "#00FF00",
+    "Blue": "#0000FF",
+    "Yellow": "#FFFF00",
+    "Cyan": "#00FFFF",
+    "Magenta": "#FF00FF",
+    "Orange": "#FFA500",
+    "Pink": "#FFC0CB",
+    "Purple": "#800080",
+    "Brown": "#8B4513"
+}
+
+# Initialize main window
+root = tk.Tk()
+root.title("Color Blindness Test")
+root.geometry("550x450")
+root.config(bg="white")
+
+# Game variables
+score = 0
+rounds = 0
+total_rounds = 10
+correct_color = ""
+
+# Heading
+title = tk.Label(root, text="🎨 Color Blindness Test", font=("Arial", 22, "bold"), bg="white")
+title.pack(pady=10)
+
+# Frame to display color
+color_frame = tk.Frame(root, width=300, height=200, bg="white", relief="solid", bd=2)
+color_frame.pack(pady=20)
+
+# Label for color code
+color_label = tk.Label(root, text="", font=("Arial", 14), bg="white")
+color_label.pack()
+
+# Feedback label
+feedback = tk.Label(root, text="", font=("Arial", 14), bg="white")
+feedback.pack(pady=10)
+
+# Score label
+score_label = tk.Label(root, text=f"Score: {score} / {total_rounds}", font=("Arial", 14, "bold"), bg="white", fg="#333")
+score_label.pack(pady=5)
+
+# Function to generate random color
+def generate_color():
+    global correct_color, rounds
+    if rounds >= total_rounds:
+        show_summary()
+        return
+
+    feedback.config(text="")
+    rounds += 1
+
+    correct_color = random.choice(list(color_dict.keys()))
+    color_hex = color_dict[correct_color]
+    color_frame.config(bg=color_hex)
+    color_label.config(text=f"Hex Code: {color_hex}")
+
+    # Randomize options
+    options = random.sample(list(color_dict.keys()), 4)
+    if correct_color not in options:
+        options[random.randint(0, 3)] = correct_color
+
+    for i, btn in enumerate(buttons):
+        btn.config(text=options[i], command=lambda c=options[i]: check_answer(c))
+
+# Function to check answer
+def check_answer(selected_color):
+    global score
+    if selected_color == correct_color:
+        feedback.config(text="✅ Correct!", fg="green")
+        score += 1
+    else:
+        feedback.config(text=f"❌ Wrong! It was {correct_color}.", fg="red")
+    score_label.config(text=f"Score: {score} / {total_rounds}")
+
+# Function to show result summary
+def show_summary():
+    for btn in buttons:
+        btn.config(state="disabled")
+    color_frame.config(bg="white")
+    color_label.config(text="")
+    feedback.config(
+        text=f"Test Completed!\nYour final score: {score} / {total_rounds}",
+        fg="blue",
+        font=("Arial", 16, "bold")
+    )
+
+# Buttons for color options
+button_frame = tk.Frame(root, bg="white")
+button_frame.pack(pady=10)
+
+buttons = []
+for i in range(4):
+    btn = tk.Button(button_frame, text="", font=("Arial", 12, "bold"), width=10, bg="#f0f0f0")
+    btn.grid(row=0, column=i, padx=5, pady=5)
+    buttons.append(btn)
+
+# Next button
+next_btn = tk.Button(root, text="Next ▶", font=("Arial", 12, "bold"), command=generate_color, bg="#0078D7", fg="white")
+next_btn.pack(pady=15)
+
+# Start with first color
+generate_color()
+
+root.mainloop()
